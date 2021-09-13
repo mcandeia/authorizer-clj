@@ -15,22 +15,22 @@
 
 (deftest account-should-be-open-when-executed
   (let [[_, updated-state] (handle-command-for-state zero {"account" {
-                                                                    "active-card"     true
-                                                                    "available-limit" 100
-                                                                    }})]
+                                                                      "active-card"     true
+                                                                      "available-limit" 100
+                                                                      }})]
     (testing "account should be open when executed"
       (is (get-in updated-state [:account :active-card]))
       (is (= 100 (get-in updated-state [:account :available-limit]))))))
 
 
 (deftest account-should-not-open-twice
-  (let [[_, first-state] (handle-command-for-state zero {"account" {
-                                                                    "active-card"     true
-                                                                    "available-limit" 100
-                                                                    }})]
+  (let [[_, first-state] (handle-command-for-state {"account" {
+                                                               "active-card"     true
+                                                               "available-limit" 100
+                                                               }})]
     (let [[violations, _] (handle-command-for-state first-state {"account" {
-                                                                      "active-card"     false
-                                                                      "available-limit" 10
-                                                                      }})]
-    (testing "account should not be reopened"
-      (is (= [:account-already-initialized] violations))))))
+                                                                            "active-card"     false
+                                                                            "available-limit" 10
+                                                                            }})]
+      (testing "account should not be reopened"
+        (is (= [:account-already-initialized] violations))))))

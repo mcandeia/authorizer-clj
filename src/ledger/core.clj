@@ -6,14 +6,14 @@
   (:gen-class))
 
 (def zero {
-                 :event-counter                       0
-                 :account                             {
-                                                       :active-card     false
-                                                       :available-limit 0
-                                                       }
-                 :latest-merchant-unique-transactions {}
-                 :transactions-two-minutes-window     []
-                 })
+           :event-counter                       0
+           :account                             {
+                                                 :active-card     false
+                                                 :available-limit 0
+                                                 }
+           :latest-merchant-unique-transactions {}
+           :transactions-two-minutes-window     []
+           })
 
 (def is-open-account-command? #(contains? % "account"))
 (def is-transaction-command? #(contains? % "transaction"))
@@ -32,9 +32,11 @@
     [violations, (if (empty? violations) next-state state)]))
 
 
-(defn handle-command-for-state [state command]
-  (let [[exec, validator] (command-executor command)]
-    (run-cmd exec validator state)))
+(defn handle-command-for-state
+  ([command] (handle-command-for-state zero command))
+  ([state command]
+   (let [[exec, validator] (command-executor command)]
+     (run-cmd exec validator state))))
 (defn change-state-to [state] (swap! current-state (constantly state)))
 (defn handle-command [command]
   (let [[violations, next-state] (handle-command-for-state @current-state command)]
