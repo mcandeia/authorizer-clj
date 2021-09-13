@@ -8,13 +8,18 @@
   (:gen-class))
 
 (defn as-json [resp] (str (json/write-str resp)))
-(defn execute-command [req]
+
+(defn execute-command [cmd-json]
+  (-> cmd-json
+      (handle-command)
+      (as-json)))
+
+(defn execute-command-req [req]
   {:status  200
    :headers {"Content-Type" "application/json"}
    :body    (-> (get req :body)
-                (handle-command)
-                (as-json))})
+                (execute-command))})
 
 (defroutes ledger-routes
-           (POST "/commands" [] (wrap-json-body execute-command))
+           (POST "/commands" [] (wrap-json-body execute-command-req))
            (route/not-found "Error, page not found!"))

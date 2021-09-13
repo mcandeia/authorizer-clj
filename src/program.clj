@@ -1,10 +1,12 @@
 (ns program
-  (:require [api.routes :refer :all] )
+  (:require [api.routes :refer :all]
+            [clojure.data.json :as json])
   (:require [compojure.core :refer :all]
             [ring.adapter.jetty :as jetty]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.defaults :refer :all])
-  (:gen-class))
+  (:gen-class)
+  (:import (java.io BufferedReader)))
 
 (def port 3000)
 (def with-anti-forgery (-> site-defaults
@@ -19,6 +21,10 @@
   []
   (jetty/run-jetty (app) {:port port :join? false}))
 
-(defn -main [& args]
+(defn __run-server__ [& args]
   (start-server)
   (println (str "Running webserver at http://127.0.0.1:" port "/")))
+
+(defn -main [& args]
+  (doseq [ln (line-seq (BufferedReader. *in*))]
+    (println (execute-command (json/read-str ln)))))
