@@ -5,6 +5,10 @@
             :url  "https://www.eclipse.org/legal/epl-2.0/"}
   :dependencies [
                  [org.clojure/clojure "1.10.1"]
+                 ; DateTime utils
+                 [clj-time "0.15.2"]
+                 ; Match library
+                 [org.clojure/core.match "1.0.0"]
                  ; Compojure - A basic routing library
                  [compojure "1.6.1"]
                  ; Ring body parser
