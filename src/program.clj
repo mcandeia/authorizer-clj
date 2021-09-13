@@ -28,3 +28,4 @@
 (defn -main [& args]
   (doseq [ln (line-seq (BufferedReader. *in*))]
     (println (execute-command (json/read-str ln)))))
+
