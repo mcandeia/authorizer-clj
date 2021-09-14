@@ -15,15 +15,12 @@
            :transactions-two-minutes-window     []
            })
 
-(def is-open-account-command? #(contains? % "account"))
-(def is-transaction-command? #(contains? % "transaction"))
-
 (def current-state (atom zero))
 (def no-op (constantly []))
 (defn command-executor [command]
   (match [command]
-         [(_ :guard is-open-account-command?)] [(partial open/exec command) open/validator]
-         [(_ :guard is-transaction-command?)] [(partial transaction/exec command) transaction/validator]
+         [({:account _} :only [:account])] [(partial open/exec command) open/validator]
+         [({:transaction _} :only [:transaction])] [(partial transaction/exec command) transaction/validator]
          :else [identity no-op]))
 
 (defn run-cmd [exec validator state]

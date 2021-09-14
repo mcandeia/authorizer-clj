@@ -2,7 +2,6 @@
   (:require [ledger.core :refer :all]
             [compojure.core :refer :all]
             [compojure.route :as route]
-            [ring.middleware.json :refer [wrap-json-body]]
             [ring.middleware.defaults :refer :all]
             [clojure.data.json :as json])
   (:gen-class))
@@ -21,5 +20,5 @@
                 (execute-command))})
 
 (defroutes ledger-routes
-           (POST "/commands" [] (wrap-json-body execute-command-req))
+           (POST "/commands" [] execute-command-req)
            (route/not-found "Error, page not found!"))
