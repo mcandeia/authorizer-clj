@@ -3,6 +3,7 @@
             [clojure.data.json :as json])
   (:require [compojure.core :refer :all]
             [ring.adapter.jetty :as jetty]
+            [ring.middleware.json :refer [wrap-json-body]]
             [ring.middleware.reload :refer [wrap-reload]]
             [ring.middleware.defaults :refer :all])
   (:gen-class)
@@ -14,6 +15,7 @@
 (defn app
   []
   (-> ledger-routes
+      (wrap-json-body {:key-fn keyword})
       (wrap-reload)
       (wrap-defaults with-anti-forgery)))
 
@@ -21,11 +23,11 @@
   []
   (jetty/run-jetty (app) {:port port :join? false}))
 
-(defn __run-server__ [& args]
+(defn -main [& args]
   (start-server)
   (println (str "Running webserver at http://127.0.0.1:" port "/")))
 
-(defn -main [& args]
+(defn -main2 [& args]
   (doseq [ln (line-seq (BufferedReader. *in*))]
     (println (execute-command (json/read-str ln)))))
 
