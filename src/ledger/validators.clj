@@ -26,7 +26,7 @@
          [(_ :guard #(and (is-card-active %) (is-account-created %)))] OK
          :else VIOLATES))
 
-(defn check-max-frequency [max-transactions _ next-state] (<= (count (get next-state :transactions-two-minutes-window)) max-transactions))
+(defn check-max-frequency [max-transactions previous-state next-state] (or (get-in previous-state [:account :allow-listed]) (<= (count (get next-state :transactions-two-minutes-window)) max-transactions)))
 
 (def high-frequency-window-size 3)
 (def double-transaction-min-diff 2)
@@ -37,7 +37,7 @@
 (defn check-double-transaction
   [previous-state next-state]
   (let [transaction-window (get next-state :transactions-two-minutes-window)]
-    (if (empty? transaction-window) true (check-if-transaction-is-doubled previous-state (first transaction-window)))))
+    (if (or (get-in previous-state [:account :allow-listed]) (empty? transaction-window)) true (check-if-transaction-is-doubled previous-state (first transaction-window)))))
 
 
 (def violation-checkers {

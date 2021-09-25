@@ -14,10 +14,10 @@
                                                       } {})))))
 
 (deftest account-should-be-open-when-executed
-  (let [[_, updated-state] (handle-command-for-state zero {"account" {
+  (let [[_, updated-state] (handle-command-for-state {"account" {
                                                                       "active-card"     true
                                                                       "available-limit" 100
-                                                                      }})]
+                                                                      }} zero)]
     (testing "account should be open when executed"
       (is (get-in updated-state [:account :active-card]))
       (is (= 100 (get-in updated-state [:account :available-limit]))))))
@@ -28,9 +28,9 @@
                                                                "active-card"     true
                                                                "available-limit" 100
                                                                }})]
-    (let [[violations, _] (handle-command-for-state first-state {"account" {
+    (let [[violations, _] (handle-command-for-state {"account" {
                                                                             "active-card"     false
                                                                             "available-limit" 10
-                                                                            }})]
+                                                                            }} first-state)]
       (testing "account should not be reopened"
         (is (= [:account-already-initialized] violations))))))

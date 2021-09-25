@@ -23,11 +23,11 @@
   []
   (jetty/run-jetty (app) {:port port :join? false}))
 
-(defn -main [& args]
+(defn -main2 [& args]
   (start-server)
   (println (str "Running webserver at http://127.0.0.1:" port "/")))
 
-(defn -main2 [& args]
+(defn -main [& args]
   (doseq [ln (line-seq (BufferedReader. *in*))]
-    (println (execute-command (json/read-str ln)))))
+    (println (execute-command (json/read-str ln :key-fn keyword)))))
 
